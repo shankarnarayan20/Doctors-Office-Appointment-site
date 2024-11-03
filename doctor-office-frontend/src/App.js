@@ -67,7 +67,7 @@ function App() {
               onChange={(e) => setForm({ ...form, date: e.target.value })}
               className="form-input"
             />
-            <button type="submit" className="submit-button">Book Appointment</button>
+            <button type="submit" className="submit-button">Book Appointmenttt</button>
           </form>
         </section>
 
