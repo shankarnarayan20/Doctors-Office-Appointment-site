@@ -4,21 +4,20 @@ import './App.css';
 function App() {
   const [appointments, setAppointments] = useState([]);
   const [form, setForm] = useState({ patientName: '', doctorName: '', date: '' });
-  const baseUrl = 'http://a0f108ccf3a7c4eafa7445cf7f2601c7-1257704000.us-east-1.elb.amazonaws.com/appointments';
 
   useEffect(() => {
     fetchAppointments();
   }, []);
 
   const fetchAppointments = () => {
-    fetch(baseUrl)
+    fetch('http://localhost:5000/appointments')
       .then((res) => res.json())
       .then((data) => setAppointments(data));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(baseUrl, {
+    fetch('http://localhost:5000/appointments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -31,7 +30,7 @@ function App() {
   };
 
   const handleDelete = (appointmentId) => {
-    fetch(`${baseUrl}/${appointmentId}`, {
+    fetch(`http://localhost:5000/appointments/${appointmentId}`, {
       method: 'DELETE',
     })
       .then((res) => {
@@ -44,7 +43,7 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Doctor's Office Appointments</h1>
+        <h1>Doctor's Office Appointmentss</h1>
       </header>
       <main className="main-content">
         <section className="form-section">
