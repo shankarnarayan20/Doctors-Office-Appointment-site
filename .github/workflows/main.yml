@@ -55,7 +55,7 @@ jobs:
 
     - name: Update EKS Deployment for Backend
       run: |
-        kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY_1:latest -n default
+        kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY_1:latest
     - name: Update EKS Deployment for Frontend
       run: |
-        kubectl set image deployment/frontend frontend=$ECR_REGISTRY/$ECR_REPOSITORY_2:latest -n default
+        kubectl set image deployment/frontend frontend=$ECR_REGISTRY/$ECR_REPOSITORY_2:latest
