@@ -31,6 +31,10 @@ jobs:
         role-to-assume: arn:aws:iam::156041403412:role/github-actions-role
         aws-region: ${{ env.AWS_REGION }}
 
+    - name: Update kube config
+      run: |
+        aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+    
     - name: Login to Amazon ECR
       run: |
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
