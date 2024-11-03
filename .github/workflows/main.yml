@@ -9,10 +9,6 @@ env:
   ECR_REPOSITORY_1: midterm/backend
   ECR_REPOSITORY_2: midterm/frontend
   CLUSTER_NAME: midterm
-  DEPLOYMENT_1: backend
-  DEPLOYMENT_2: frontend
-  CONTAINER_NAME_1: backend
-  CONTAINER_NAME_2: frontend
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -39,27 +35,28 @@ jobs:
       run: |
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
-    # Build and push Docker images for Backend
-    - name: Build Docker image for Backend
+    # Build and push Backend with SHA
+    - name: Build and push Backend
+      id: build-backend
       run: |
-        docker build -t $ECR_REPOSITORY_1:latest -f doctor-office-backend/Dockerfile doctor-office-backend/
-    - name: Tag and push Docker image for Backend
-      run: |
-        docker tag $ECR_REPOSITORY_1:latest $ECR_REGISTRY/$ECR_REPOSITORY_1:latest
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_1:latest -f doctor-office-backend/Dockerfile doctor-office-backend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_1:latest
+        BACKEND_SHA=$(aws ecr describe-images --repository-name midterm/backend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
+        echo "backend_sha=$ECR_REGISTRY/$ECR_REPOSITORY_1@${BACKEND_SHA}" >> $GITHUB_OUTPUT
 
-    # Build and push Docker image for Frontend
-    - name: Build Docker image for Frontend
+    # Build and push Frontend with SHA
+    - name: Build and push Frontend
+      id: build-frontend
       run: |
-        docker build -t $ECR_REPOSITORY_2:latest -f doctor-office-frontend/Dockerfile doctor-office-frontend/
-    - name: Tag and push Docker image for Frontend
-      run: |
-        docker tag $ECR_REPOSITORY_2:latest $ECR_REGISTRY/$ECR_REPOSITORY_2:latest
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_2:latest -f doctor-office-frontend/Dockerfile doctor-office-frontend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_2:latest
+        FRONTEND_SHA=$(aws ecr describe-images --repository-name midterm/frontend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
+        echo "frontend_sha=$ECR_REGISTRY/$ECR_REPOSITORY_2@${FRONTEND_SHA}" >> $GITHUB_OUTPUT
 
     - name: Update EKS Deployment for Backend
       run: |
-        kubectl set image deployment/backend backend=$ECR_REGISTRY/$ECR_REPOSITORY_1:latest
+        kubectl set image deployment/backend backend=${{ steps.build-backend.outputs.backend_sha }}
+
     - name: Update EKS Deployment for Frontend
       run: |
-        kubectl set image deployment/frontend frontend=$ECR_REGISTRY/$ECR_REPOSITORY_2:latest
+        kubectl set image deployment/frontend frontend=${{ steps.build-frontend.outputs.frontend_sha }}
