@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   const [appointments, setAppointments] = useState([]);
   const [form, setForm] = useState({ patientName: '', doctorName: '', date: '' });
-  const baseUrl = 'http://ae84ed1ba48d74e13a4ab3e043eae239-1224625943.us-east-1.elb.amazonaws.com/appointments';
+  const baseUrl = 'http://a9616fed224a240aca8975431a56e66b-111233371.us-east-1.elb.amazonaws.com/appointments';
 
   useEffect(() => {
     fetchAppointments();
