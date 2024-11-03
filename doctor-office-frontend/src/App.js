@@ -44,7 +44,7 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Doctor's Office Appointmentss</h1>
+        <h1>Doctor's Office Appointments</h1>
       </header>
       <main className="main-content">
         <section className="form-section">
