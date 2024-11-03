@@ -8,12 +8,11 @@ env:
   ECR_REGISTRY: 156041403412.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY_1: midterm/backend
   ECR_REPOSITORY_2: midterm/frontend
-  CLUSTER_NAME: midterm
+  CLUSTER_NAME: midterm-cluster
   DEPLOYMENT_1: backend
   DEPLOYMENT_2: frontend
   CONTAINER_NAME_1: backend
   CONTAINER_NAME_2: frontend
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,9 +28,8 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
-        role-to-assume: arn:aws:iam::156041403412:role/github-actions-role  # Updated to use the new role
+        role-to-assume: arn:aws:iam::156041403412:role/github-actions-role
         aws-region: ${{ env.AWS_REGION }}
-        audience: sts.amazonaws.com
 
     - name: Login to Amazon ECR
       run: |
@@ -39,7 +37,8 @@ jobs:
 
     # Build and push Docker images for Backend
     - name: Build Docker image for Backend
-      run: docker build -t $ECR_REPOSITORY_1:latest -f doctor-office-backend/Dockerfile .
+      run: |
+        docker build -t $ECR_REPOSITORY_1:latest -f doctor-office-backend/Dockerfile doctor-office-backend/
     - name: Tag and push Docker image for Backend
       run: |
         docker tag $ECR_REPOSITORY_1:latest $ECR_REGISTRY/$ECR_REPOSITORY_1:latest
@@ -47,8 +46,8 @@ jobs:
 
     # Build and push Docker image for Frontend
     - name: Build Docker image for Frontend
-      run: docker build -t $ECR_REPOSITORY_2:latest -f doctor-office-frontend/Dockerfile .
-
+      run: |
+        docker build -t $ECR_REPOSITORY_2:latest -f doctor-office-frontend/Dockerfile doctor-office-frontend/
     - name: Tag and push Docker image for Frontend
       run: |
         docker tag $ECR_REPOSITORY_2:latest $ECR_REGISTRY/$ECR_REPOSITORY_2:latest
