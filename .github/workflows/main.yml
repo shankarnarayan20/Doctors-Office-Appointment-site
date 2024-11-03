@@ -8,7 +8,7 @@ env:
   ECR_REGISTRY: 156041403412.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY_1: midterm/backend
   ECR_REPOSITORY_2: midterm/frontend
-  CLUSTER_NAME: midterm-cluster
+  CLUSTER_NAME: midterm
   DEPLOYMENT_1: backend
   DEPLOYMENT_2: frontend
   CONTAINER_NAME_1: backend
