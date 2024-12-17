@@ -53,10 +53,10 @@ jobs:
         FRONTEND_SHA=$(aws ecr describe-images --repository-name final/frontend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
         echo "frontend_sha=$ECR_REGISTRY/$ECR_REPOSITORY_2@${FRONTEND_SHA}" >> $GITHUB_OUTPUT
 
-    # - name: Update EKS Deployment for Backend
-    #   run: |
-    #     kubectl set image deployment/backend backend=${{ steps.build-backend.outputs.backend_sha }}
+    - name: Update EKS Deployment for Backend
+      run: |
+        kubectl set image deployment/backend backend=${{ steps.build-backend.outputs.backend_sha }}
 
-    # - name: Update EKS Deployment for Frontend
-    #   run: |
-    #     kubectl set image deployment/frontend frontend=${{ steps.build-frontend.outputs.frontend_sha }}
+    - name: Update EKS Deployment for Frontend
+      run: |
+        kubectl set image deployment/frontend frontend=${{ steps.build-frontend.outputs.frontend_sha }}
