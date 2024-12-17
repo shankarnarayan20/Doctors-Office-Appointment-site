@@ -5,10 +5,10 @@ on:
       - main
 env:
   AWS_REGION: us-east-1
-  ECR_REGISTRY: 156041403412.dkr.ecr.us-east-1.amazonaws.com
-  ECR_REPOSITORY_1: midterm/backend
-  ECR_REPOSITORY_2: midterm/frontend
-  CLUSTER_NAME: midterm
+  ECR_REGISTRY: 038462778419.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY_1: final/backend
+  ECR_REPOSITORY_2: final/frontend
+  CLUSTER_NAME: final
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
-        role-to-assume: arn:aws:iam::156041403412:role/github-actions-role
+        role-to-assume: arn:aws:iam::038462778419:role/github-actions-role
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Update kube config
@@ -41,7 +41,7 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_1:latest -f doctor-office-backend/Dockerfile doctor-office-backend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_1:latest
-        BACKEND_SHA=$(aws ecr describe-images --repository-name midterm/backend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
+        BACKEND_SHA=$(aws ecr describe-images --repository-name final/backend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
         echo "backend_sha=$ECR_REGISTRY/$ECR_REPOSITORY_1@${BACKEND_SHA}" >> $GITHUB_OUTPUT
 
     # Build and push Frontend with SHA
@@ -50,7 +50,7 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_2:latest -f doctor-office-frontend/Dockerfile doctor-office-frontend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_2:latest
-        FRONTEND_SHA=$(aws ecr describe-images --repository-name midterm/frontend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
+        FRONTEND_SHA=$(aws ecr describe-images --repository-name final/frontend --image-ids imageTag=latest --query 'imageDetails[0].imageDigest' --output text)
         echo "frontend_sha=$ECR_REGISTRY/$ECR_REPOSITORY_2@${FRONTEND_SHA}" >> $GITHUB_OUTPUT
 
     - name: Update EKS Deployment for Backend
